@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dynamometer</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .main-box {
+            width: 60%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #3498db;
+        }
+
+        .speed {
+            font-size: 12em;
+            margin: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .speed span {
+            font-size: 0.2em;
+            margin-left: 5px;
+        }
+
+        .speed-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .data-box {
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .data-box-left {
+            padding: 35px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            display: inline-block;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+        }
+
+        .popup-content {
+            padding: 20px;
+        }
+
+        .input-field input[type="text"],
+        .materialize-textarea {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 8px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            justify-content: flex-end;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .main-box {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-box">
+        <header class="header">
+            <h2 id="pageTitle">Dynamometer</h2>
+        </header>
+
+        <div class="center-box">
+            <h1 id="speedNumber" class="speed">0.00<span class="small-text">kph</span></h1>
+        </div>
+
+        <div class="speed-details">
+            <div class="data-box" id="mphValue">0.00 mph</div>
+            <div class="data-box" id="msValue">0.00 m/s</div>
+        </div>
+
+        <div class="row">
+            <div class="col s6">
+                <div class="data-box-left" id="boxName">Name: Default Name</div>
+                <div class="data-box-left" id="boxWeight">Weight: 0 kg</div>
+            </div>
+            <div class="col s6">
+                <div class="data-box" id="boxAllTime">Time: 0</div>
+                <div class="data-box" id="boxType">Type: </div>
+                <div class="data-box" id="boxMeasurement">Measurement: 0</div>
+            </div>
+        </div>
+
+        <div class="center-box">
+            <a class="waves-effect waves-light btn modal-trigger" href="#vehicleInfoPopup">Change Vehicle Info</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#notePopup">Add Note</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#pdfPopup">Generate PDF</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#wheelDataPopup">Wheel Data</a>
+            <a onclick='connectSerial()' class="waves-effect waves-light btn modal-trigger" href="#connect">Connect</a>
+        </div>
+
+        <div id="vehicleInfoPopup" class="modal">
+            <div class="modal-content popup-content">
+                <h4>Change Vehicle Info</h4>
+                <div class="input-field">
+                    <input id="vehicleName" type="text" class="validate" placeholder="Enter Vehicle Name">
+                </div>
+                <div class="input-field">
+                    <input id="vehicleWeight" type="text" class="validate" placeholder="Enter Vehicle Weight (kg)">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="updateVehicleInfo">Update</a>
+            </div>
+        </div>
+
+        <div id="notePopup" class="modal">
+            <div class="modal-content popup-content">
+                <h4>Notes</h4>
+                <div class="input-field">
+                    <textarea id="noteTextArea" class="materialize-textarea" placeholder="Add a Note"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="addNote">Add</a>
+            </div>
+            <div class="modal-content popup-content">
+                <h4>All Notes</h4>
+                <div class="input-field">
+                    <textarea id="allNotesTextArea" class="materialize-textarea" placeholder=""></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="wheelDataPopup" class="modal">
+            <div class="modal-content popup-content">
+                <h4>Wheel Data</h4>
+                <div class="input-field">
+                    <textarea id="wheelDataTextArea" class="materialize-textarea" placeholder=""></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="wheelDataButton">Save</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        const numberOfMagnets = 10.0
+        const TYPES = ["None", "Casual Measurement", "0-max Measurement", "Friction Measurement"]
+        async function connectSerial() {
+            try {
+                // Prompt user to select any serial port.
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
+                let settings = {};
+    
+                if (localStorage.dtrOn == "true") settings.dataTerminalReady = true;
+                if (localStorage.rtsOn == "true") settings.requestToSend = true;
+                if (Object.keys(settings).length > 0) await port.setSignals(settings);
+      
+                
+                textEncoder = new TextEncoderStream();
+                writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+                writer = textEncoder.writable.getWriter();
+                await listenToPort();
+            } catch (e){
+                alert("Serial Connection Failed" + e);
+            }
+        }
+
+        function isValidWheelObject(obj) {
+            if("a" in obj && "tm" in obj && "w" in obj) {
+                return true;
+            }
+            return false;
+        }
+
+        function getAllTime(obj) {
+            const allTimeMs = obj["a"];
+            const allTimeSecond = allTimeMs / 1000.0;
+            return allTimeSecond;
+        }
+
+        function setMeasurement(value) {
+            document.getElementById('boxMeasurement').textContent = "Measurement: " + value;
+        }
+
+        function getMeasurement(obj) {
+            const measurement = obj["m"];
+            return measurement
+        }
+
+        function setAllTime(value) {
+            document.getElementById('boxAllTime').textContent = "Time: " + value.toFixed(2).toString() + " sec";
+        }
+
+        function getType(obj) {
+            const type = obj["t"];
+            return TYPES[type]
+        }
+
+        function setType(value) {
+            document.getElementById('boxType').textContent = "Type: " + value;
+        }
+
+        function getMs(obj) {
+            const counter = obj["c"];
+            const sec = obj["tm"]/1000.0
+            const ms = (0.03 * Math.PI / numberOfMagnets) * (counter) * (1.0 / sec);
+            return ms;
+        }
+
+        function setMs(value) {
+            document.getElementById('msValue').textContent = value.toFixed(2).toString() + " m/s" ;
+        }
+
+        function getKph(obj) {
+            const ms = getMs(obj);
+            return ms * 3.6;
+        }
+
+        function setKph(value) {
+            document.getElementById('speedNumber').innerHTML = value.toFixed(2).toString() + "<span class=\"small-text\">kph</span>" ;
+        }
+
+        function getMph(obj) {
+            const ms = getMs(obj);
+            return ms * 2.2369;
+        }
+
+        function setMph(value) {
+            document.getElementById('mphValue').textContent = value.toFixed(2).toString() + " mph" ;
+        }
+
+        function addWheelObjectToWheelData(obj) {
+            const str = JSON.stringify(obj);
+            document.getElementById('wheelDataTextArea').value = document.getElementById('wheelDataTextArea').value + str + "\n"
+        }
+
+        async function listenToPort() {
+            const textDecoder = new TextDecoderStream();
+            const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+            const reader = textDecoder.readable.getReader();
+
+            // Listen to data coming from the serial device.
+            let result = ""
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) {
+                    // Allow the serial port to be closed later.
+                    console.log('[readLoop] DONE', done);
+                    reader.releaseLock();r
+                    break;W
+                }
+                // value is a string.
+                
+                if(value.trim().slice(-1) == '}' && result.trim().charAt(0) == '{') {
+                    result += value;
+                    const objs = result.split("\n");
+                    const wheelObject = JSON.parse(objs[0].trim());
+                    objs.forEach((element) => {
+                        
+                        if(element.trim().length > 2 && element.trim().charAt(0) == '{' && element.trim().slice(-1) == '}') {
+                            const obj = JSON.parse(element.trim());
+                            if(isValidWheelObject(obj)) {
+                                addWheelObjectToWheelData(obj);
+                            }
+                        }
+                    });
+                    if(isValidWheelObject(wheelObject)) {
+                        setMs( getMs(wheelObject) );
+                        setKph( getKph(wheelObject) );
+                        setMph( getMph(wheelObject) );
+                        setAllTime( getAllTime(wheelObject) );
+                        setMeasurement( getMeasurement(wheelObject) );
+                        setType( getType(wheelObject) );
+                    }
+                } else if(value.trim().charAt(0) == '{'){
+                    result = value.trim();
+                } else {
+                    result += value.trim();
+                }
+            }
+        }
+        M.AutoInit();
+        document.getElementById('updateVehicleInfo').addEventListener('click', function () {
+            const vehicleName = document.getElementById('vehicleName').value;
+            const vehicleWeight = document.getElementById('vehicleWeight').value;
+            document.getElementById('vehicleName').value = "";
+            document.getElementById('vehicleWeight').value = ""
+            document.getElementById('boxName').textContent = "Name: " + vehicleName;
+            document.getElementById('boxWeight').textContent = "Weight: " + vehicleWeight + " kg";
+        });
+
+        document.getElementById('addNote').addEventListener('click', function () {
+            const noteText = document.getElementById('noteTextArea').value;
+            document.getElementById('noteTextArea').value = ""
+            document.getElementById('allNotesTextArea').value = document.getElementById('allNotesTextArea').value + document.getElementById('boxMeasurement').textContent + " | " + noteText + "\n"
+        });
+    </script>
+</body>
+</html>
