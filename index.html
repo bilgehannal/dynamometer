@@ -127,8 +127,9 @@
 
         <div class="row">
             <div class="col s6">
-                <div class="data-box-left" id="boxName">Name: Default Name</div>
-                <div class="data-box-left" id="boxWeight">Weight: 0 kg</div>
+                <div class="data-box" id="boxName">Name: Default Name</div>
+                <div class="data-box" id="boxWeight">Weight: 0 kg</div>
+                <div class="data-box" id="boxDiameter">Diameter: 0 cm</div>
             </div>
             <div class="col s6">
                 <div class="data-box" id="boxAllTime">Time: 0</div>
@@ -154,6 +155,10 @@
                 <div class="input-field">
                     <input id="vehicleWeight" type="text" class="validate" placeholder="Enter Vehicle Weight (kg)">
                 </div>
+                <div class="input-field">
+                    <input id="wheelDiameter" type="text" class="validate" placeholder="Enter Wheel Diameter (cm)">
+                </div>
+            </div>
             </div>
             <div class="modal-footer">
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="updateVehicleInfo">Update</a>
@@ -334,10 +339,13 @@
         document.getElementById('updateVehicleInfo').addEventListener('click', function () {
             const vehicleName = document.getElementById('vehicleName').value;
             const vehicleWeight = document.getElementById('vehicleWeight').value;
+            const wheelDiameter = document.getElementById('wheelDiameter').value;
             document.getElementById('vehicleName').value = "";
             document.getElementById('vehicleWeight').value = ""
+            document.getElementById('wheelDiameter').value = ""
             document.getElementById('boxName').textContent = "Name: " + vehicleName;
             document.getElementById('boxWeight').textContent = "Weight: " + vehicleWeight + " kg";
+            document.getElementById('boxDiameter').textContent = "Weight: " + vehicleWeight + " cm";
         });
 
         document.getElementById('addNote').addEventListener('click', function () {
