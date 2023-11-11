@@ -139,10 +139,10 @@
         </div>
 
         <div class="center-box">
-            <a class="waves-effect waves-light btn modal-trigger" href="#vehicleInfoPopup">Change Vehicle Info</a>
+            <a onclick='reset_vehicle_info()' class="waves-effect waves-light btn modal-trigger" href="#vehicleInfoPopup">Change Vehicle Info</a>
             <a class="waves-effect waves-light btn modal-trigger" href="#notePopup">Add Note</a>
-            <a class="waves-effect waves-light btn modal-trigger" href="#pdfPopup">Generate PDF</a>
             <a class="waves-effect waves-light btn modal-trigger" href="#wheelDataPopup">Wheel Data</a>
+            <a onclick='generateReport()' class="waves-effect waves-light btn modal-trigger" href="#pdfPopup">Generate Report</a>
             <a onclick='connectSerial()' class="waves-effect waves-light btn modal-trigger" href="#connect">Connect</a>
         </div>
 
@@ -218,6 +218,65 @@
             } catch (e){
                 alert("Serial Connection Failed" + e);
             }
+        }
+
+        function generateReport() {
+            let notes = []
+            let units = []
+            if (document.getElementById('allNotesTextArea').value != "") {
+                notes = document.getElementById('allNotesTextArea').value.trim().split("\n")
+            }
+
+            const units_str = document.getElementById('wheelDataTextArea').value.trim().split("\n")
+            for(let i=0; i<units_str.length; i++) {
+                units.push(JSON.parse(units_str[i]))
+            }
+            const vehicleName = document.getElementById('vehicleName').value;
+            const vehicleWeight = parseFloat(document.getElementById('vehicleWeight').value);
+            const wheelDiameter = parseFloat(document.getElementById('wheelDiameter').value);
+
+            const requestObject = {
+                vehicle: {
+                    name: vehicleName,
+                    weight: vehicleWeight,
+                    wheel_diameter: wheelDiameter
+                },
+                notes: notes,
+                units: units
+            }
+
+            // Options for the fetch API
+            const url = "http://localhost:5000/generate_report"
+            
+
+            const requestOptions = {
+                method: 'POST',
+                body: JSON.stringify(requestObject),
+                redirect: 'follow'
+            };
+
+            // Make the POST request
+            document.getElementById("pageTitle").textContent = "Generating Report..."
+            fetch(url, requestOptions)
+            .then(response => response.blob()) // Get the response as a Blob
+                .then(blob => {
+                    // Create a link element
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'report.pdf'; // Set the desired file name
+
+                    // Append the link to the document body
+                    document.body.appendChild(link);
+
+                    // Trigger a click on the link to start the download
+                    link.click();
+
+                    // Remove the link from the document
+                    document.body.removeChild(link);
+                    document.getElementById("pageTitle").textContent = "Dynamometer"
+                })
+                .catch(error => console.error('Error:', error));
+                
         }
 
         function isValidWheelObject(obj) {
@@ -339,12 +398,9 @@
             const vehicleName = document.getElementById('vehicleName').value;
             const vehicleWeight = document.getElementById('vehicleWeight').value;
             const wheelDiameter = document.getElementById('wheelDiameter').value;
-            document.getElementById('vehicleName').value = "";
-            document.getElementById('vehicleWeight').value = ""
-            document.getElementById('wheelDiameter').value = ""
             document.getElementById('boxName').textContent = "Name: " + vehicleName;
             document.getElementById('boxWeight').textContent = "Weight: " + vehicleWeight + " kg";
-            document.getElementById('boxDiameter').textContent = "Weight: " + vehicleWeight + " cm";
+            document.getElementById('boxDiameter').textContent = "Weight: " + wheelDiameter + " cm";
         });
 
         document.getElementById('addNote').addEventListener('click', function () {
@@ -352,6 +408,15 @@
             document.getElementById('noteTextArea').value = ""
             document.getElementById('allNotesTextArea').value = document.getElementById('allNotesTextArea').value + document.getElementById('boxMeasurement').textContent + " | " + noteText + "\n"
         });
+
+        function reset_vehicle_info() {
+            document.getElementById('vehicleName').value = "";
+            document.getElementById('vehicleWeight').value = ""
+            document.getElementById('wheelDiameter').value = ""
+            document.getElementById("pageTitle").textContent = "Dynamometer"
+        }
+        
+
     </script>
 </body>
 </html>
