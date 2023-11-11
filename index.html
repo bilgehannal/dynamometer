@@ -246,7 +246,7 @@
             }
 
             // Options for the fetch API
-            const url = "http://geargauge:5000/generate_report"
+            const url = "http://localhost:5000/generate_report"
             
 
             const requestOptions = {
@@ -263,7 +263,8 @@
                     // Create a link element
                     const link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = 'report.pdf'; // Set the desired file name
+                    const date = new Date().toLocaleDateString() + "_" + new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric"});
+                    link.download = 'report' + '_' + date + '.pdf'; // Set the desired file name
 
                     // Append the link to the document body
                     document.body.appendChild(link);
