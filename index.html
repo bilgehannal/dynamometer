@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dynamometer</title>
+    <title>GearGauge</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <style>
@@ -113,7 +113,7 @@
 <body>
     <div class="main-box">
         <header class="header">
-            <h2 id="pageTitle">Dynamometer</h2>
+            <h2 id="pageTitle">GearGauge</h2>
         </header>
 
         <div class="center-box">
@@ -198,7 +198,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
         const numberOfMagnets = 10.0
-        const TYPES = ["None", "Casual Measurement", "0-max Measurement", "Friction Measurement"]
+        const TYPES = ["None", "Casual Measurement", "Friction Measurement", "Power Measurement"]
         async function connectSerial() {
             try {
                 // Prompt user to select any serial port.
@@ -274,9 +274,12 @@
 
                     // Remove the link from the document
                     document.body.removeChild(link);
-                    document.getElementById("pageTitle").textContent = "Dynamometer"
+                    document.getElementById("pageTitle").textContent = "GearGauge"
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error)
+                    document.getElementById("pageTitle").textContent = "GearGauge"
+                });
                 
         }
 
@@ -401,7 +404,7 @@
             const wheelDiameter = document.getElementById('wheelDiameter').value;
             document.getElementById('boxName').textContent = "Name: " + vehicleName;
             document.getElementById('boxWeight').textContent = "Weight: " + vehicleWeight + " kg";
-            document.getElementById('boxDiameter').textContent = "Weight: " + wheelDiameter + " cm";
+            document.getElementById('boxDiameter').textContent = "Wheel Diameter: " + wheelDiameter + " cm";
         });
 
         document.getElementById('addNote').addEventListener('click', function () {
@@ -414,7 +417,7 @@
             document.getElementById('vehicleName').value = "";
             document.getElementById('vehicleWeight').value = ""
             document.getElementById('wheelDiameter').value = ""
-            document.getElementById("pageTitle").textContent = "Dynamometer"
+            document.getElementById("pageTitle").textContent = "GearGauge"
         }
         
 
